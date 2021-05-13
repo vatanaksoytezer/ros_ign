@@ -157,7 +157,12 @@ convert_ign_to_ros(
   const ignition::msgs::Header & ign_msg,
   std_msgs::msg::Header & ros_msg)
 {
-  ros_msg.stamp = rclcpp::Time(ign_msg.stamp().sec(), ign_msg.stamp().nsec());
+  std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
+  std::chrono::system_clock::duration dtn = tp.time_since_epoch();
+  auto nanosecs = dtn.count();
+  auto secs = nanosecs * std::chrono::system_clock::period::num / std::chrono::system_clock::period::den;
+  ros_msg.stamp = rclcpp::Time(secs, nanosecs%secs);
+  // ros_msg.stamp = rclcpp::Time(ign_msg.stamp().sec(), ign_msg.stamp().nsec());
   for (auto i = 0; i < ign_msg.data_size(); ++i) {
     auto aPair = ign_msg.data(i);
     if (aPair.key() == "frame_id" && aPair.value_size() > 0) {
