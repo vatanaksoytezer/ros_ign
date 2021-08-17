@@ -617,7 +617,7 @@ convert_ros_to_ign(
   ign_msg.clear_contact();
   for (const auto & ros_contact : ros_msg.contacts) {
     auto ign_contact = ign_msg.add_contact();
-    convert_ros_to_ign(ros_contact, *ign_wrench);
+    convert_ros_to_ign(ros_contact, *ign_contact);
   }
 }
 
